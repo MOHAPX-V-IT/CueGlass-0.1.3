@@ -1,0 +1,13 @@
+{
+  "version": "0.1.2",
+  "comparisonType": "Configured waiting, not a live end-to-end benchmark",
+  "previous": {"speechSilenceMs": 900, "extraSchedulingDelayMs": 250, "totalMs": 1150},
+  "currentDefaults": {"speechSilenceMs": 600, "extraSchedulingDelayMs": 0, "totalMs": 600},
+  "configuredReductionMs": 550,
+  "speechSilenceAdjustableMs": [450, 1200],
+  "reasoningEffortChanged": false,
+  "selectedModelChanged": false,
+  "conversationOutputBudgetChanged": false,
+  "codeModeOutputBudget": 4096,
+  "liveApiLatencyMeasured": false
+}

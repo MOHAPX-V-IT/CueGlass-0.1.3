@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-16",
+  "version": "0.1.1",
+  "platform": "Windows 10 Pro, build 19045",
+  "application": "Discord",
+  "scenario": "Full-screen sharing after restarting the share with CueGlass 0.1.1",
+  "evidenceSource": "Explicit user response in this chat",
+  "reportedResult": "Чёрный прямоугольник исчез",
+  "successReportedByUser": true,
+  "independentlyObservedByAgent": false,
+  "scope": "This user's current configuration; no universal compatibility claim"
+}

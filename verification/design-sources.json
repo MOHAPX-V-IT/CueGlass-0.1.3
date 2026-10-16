@@ -1,0 +1,11 @@
+{
+  "provider": "21st.dev",
+  "date": "2026-10-16",
+  "implementation": "Native WPF adaptation; no React runtime or source embedded",
+  "components": [
+    {"name":"Glass Card","author":"educalvolpz","demoId":28259,"url":"https://21st.dev/@educalvolpz/components/glass-card","usedFor":"Frosted surfaces, fine rim highlights, rounded glass panels"},
+    {"name":"Segmented Tabs","author":"micka_design","demoId":26923,"url":"https://21st.dev/@micka_design/components/tabs-base","usedFor":"Grouped tabs, selected segment, hover and keyboard focus states"}
+  ],
+  "themeResearch": {"name":"Darkmatter","url":"https://21st.dev/community/themes/darkmatter","searchSort":"popular"},
+  "rankingNote": "Theme search supports popularity sorting. Component search is relevance-ranked; no popularity count was provided."
+}

@@ -1,0 +1,21 @@
+{
+  "version": "0.1.3",
+  "success": true,
+  "nativeGlassApplied": true,
+  "systemTitleBarRemoved": true,
+  "gdiCaptureRestoresSyntheticBackground": true,
+  "ddaFlag": true,
+  "expectedBackground": [
+    93,
+    171,
+    173
+  ],
+  "actualProtectedPixel": [
+    93,
+    171,
+    173
+  ],
+  "liveOpenAiTested": false,
+  "discordCaptureVerified": false,
+  "note": "Actual on-screen UI over a synthetic backdrop; GDI check does not establish Discord compatibility."
+}

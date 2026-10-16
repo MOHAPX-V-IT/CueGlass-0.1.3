@@ -1,0 +1,6 @@
+src/bin/
+src/obj/
+app/
+*.dpapi
+settings.json
+*.fatal.txt

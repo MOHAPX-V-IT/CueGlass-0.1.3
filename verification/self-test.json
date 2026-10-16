@@ -1,0 +1,34 @@
+{
+  "testedAt": "2026-10-16T23:20:13.3770813+03:00",
+  "failures": 0,
+  "results": [
+    {
+      "name": "DPAPI round-trip; ciphertext contains no plaintext",
+      "passed": true
+    },
+    {
+      "name": "Stereo to mono and PCM16 resampling: 48 kHz -\u003E 24 kHz",
+      "passed": true
+    },
+    {
+      "name": "Latency settings preserve reasoning and response budget; code mode has a larger budget",
+      "passed": true
+    },
+    {
+      "name": "Screenshot prefetch shares in-flight capture; refreshes stale/other-monitor frames; clears on pause",
+      "passed": true
+    },
+    {
+      "name": "Realtime handshake, frame ordering, fragmented UTF8, pause, server close (local fake server)",
+      "passed": true
+    },
+    {
+      "name": "WPF renders, WDA exclusion and DDA compatibility flags round-trip, and window closes",
+      "passed": true
+    }
+  ],
+  "liveOpenAiTested": false,
+  "microphoneOrCallRecorded": false,
+  "discordCaptureVerified": false,
+  "note": "Local synthetic checks only; real provider access and exclusion in meeting apps require a user test."
+}
