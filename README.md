@@ -1,135 +1,111 @@
-# CueGlass 0.1.3 — помощник для Windows
+![CueGlass — AI meeting assistant for Windows](assets/github-preview.png)
 
-Первая рабочая сборка: отдельное окно с текстовыми подсказками, входящим звуком звонка, микрофоном и снимками выбранного монитора. C# / WPF / WASAPI / OpenAI Realtime. Без Electron, сервера приложения и установки .NET. Windows 10 2004+ / Windows 11, x64.
+# CueGlass
 
-## Новый стеклянный интерфейс
+English · [Русский](README.ru.md)
 
-В версии 0.1.3 убрана системная полоса заголовка. Вместо неё — собственная компактная панель с названием, сворачиванием, разворачиванием и закрытием. Окно можно двигать за верхнюю область, разворачивать двойным щелчком и менять размер за края; Alt+F4 закрывает приложение.
+A native Windows assistant that listens to meeting audio, uses screen snapshots and your notes as context, and streams text suggestions into a floating glass window.
 
-Фон размывается средствами Windows, а текст рисуется отдельным чётким слоем. Во вкладке **Настройки → Окно** есть **Стеклянный фон** и **Плотность стекла**. Плотность меняет только подложку; весь текст и кнопки больше не делаются полупрозрачными старым параметром WindowOpacity. Если нативный эффект недоступен или включена высокая контрастность Windows, остаётся плотный тёмный фон. Приложение сохраняет нативный WPF-интерфейс, без браузера и непрерывных декоративных анимаций.
+**Version 0.1.3 · C# / WPF · OpenAI Realtime · MIT**
 
-Переработаны карточки, сегментированные вкладки, поле вопроса, ползунки, чекбоксы, выпадающие списки и меню. Есть состояния наведения, клавиатурного фокуса и недоступности. Для выпадающих списков и меню ответа также делается попытка применить исключение из захвата.
+## What it does
 
-Дизайн адаптирован по материалам 21st.dev: [Glass Card — educalvolpz](https://21st.dev/@educalvolpz/components/glass-card), [Segmented Tabs — micka_design](https://21st.dev/@micka_design/components/tabs-base). [Darkmatter](https://21st.dev/community/themes/darkmatter) изучена через поиск тем с сортировкой popular. Компоненты каталога ранжируются по релевантности, поэтому количественное утверждение, что именно эти компоненты самые популярные, не делается. React-код не встроен в приложение: поверхности и взаимодействия реализованы нативно в WPF.
+- Captures microphone input and system playback audio through WASAPI.
+- Shows streaming suggestions automatically after speech pauses, or on a hotkey.
+- Uses snapshots of a selected monitor and imported notes or source files.
+- Provides a code mode for longer explanations, fixes and new application scaffolds.
+- Offers native glass blur, adjustable background density and a custom title bar.
+- Requests Windows capture exclusion, with an additional Discord compatibility option.
 
-`verification/glass-preview.png` показывает реальное окно поверх специально созданного цветного тестового фона с демонстрационным текстом. `preview.png`, `settings-preview.png` и `compact-preview.png` — рендеры интерфейса без реальных данных. Для 0.1.3 проверены отсутствие системного заголовка, нативный эффект, читаемость макетов и восстановление тестового фона при GDI-захвате защищённого окна; отчёт — `visual-check.json`. Это не повторная проверка Discord: пользователь подтвердил Discord для 0.1.1, а новый стеклянный вариант требует отдельного теста в текущем звонке.
+The app connects directly to OpenAI. It has no application server or embedded browser. The interface and default response instructions are currently in Russian.
 
-## Запуск
+## Preview
 
-1. Открой `app/CueGlass.exe`.
-2. Во вкладке **Настройки** вставь свой OpenAI API-ключ. Не отправляй ключ в переписку. Если хочешь сохранить его между запусками, включи **Сохранить ключ в Windows**.
-3. Выбери микрофон и устройство вывода, в которое приходит звук звонка. При использовании гарнитуры это обычно наушники. Устройство «По умолчанию» выбирается при старте; после его смены переподключись.
-4. Проверь монитор. При включённом **Экран для подсказок** снимок отправляется при старте и используется перед подсказками. Пока идёт речь, кадр заранее готовится в памяти. Для автоматической подсказки разрешено использовать кадр не старше 1,5 секунды; кнопка подсказки запрашивает свежий кадр. Неизменившийся снимок повторно не загружается в течение 30 секунд. Дополнительно можно включить обновление каждые 15 секунд.
-5. Добавь в контекст описание встречи, свои проекты или заметки. Можно импортировать `.txt` / `.md` до 200 КБ. Контекст отправляется в начале новой сессии.
-6. Нажми **Начать**. Начнётся платная передача выбранного звука в OpenAI. Нужны баланс и доступ к выбранной Realtime-модели.
+<p align="center">
+  <img src="verification/glass-preview.png" alt="CueGlass glass interface with demonstration content" width="390">
+</p>
 
-По умолчанию используется `gpt-realtime-2.1`; модель можно изменить. Расшифровку общего аудиоканала делает `gpt-transcribe`. Модель видит снимки, а не непрерывное видео. Она получает смешанный звук и не различает участников достоверно. Голосовые ответы не воспроизводятся: подсказки появляются только текстом.
+This is the actual application over a synthetic desktop background. All content shown is demonstration data.
 
-## Скорость без уменьшения глубины
+## Get started
 
-В 0.1.2 выбранная модель и настройки глубины рассуждений сохранены: приложение не добавляет `reasoning.effort` и не переводит модель на `low` / `minimal`. Лимит обычного ответа остался 1200 токенов. Аудио по-прежнему передаётся пакетами по 20 мс; для генерации подсказки не требуется ждать текстовую расшифровку.
+**Requirements:** Windows 10 version 2004 or later / Windows 11, x64; an internet connection; an OpenAI API key with billing enabled and access to the selected Realtime model. The portable build includes the .NET runtime.
 
-- Убрана искусственная задержка 250 мс после фиксации речевого фрагмента.
-- Ожидание тишины настраивается от 450 до 1200 мс; по умолчанию 600 мс вместо прежних 900 мс. Итого заданное ожидание стало **600 вместо 1150 мс**, на 550 мс меньше. Это сравнение настроек, а не измерение полной задержки OpenAI.
-- Снимок готовится во время речи, без передачи до запроса подсказки. Общая операция захвата используется повторно, если таймер и подсказка запросили её одновременно. Подсказка больше не теряется из-за занятого захвата.
-- Одинаковый экран не загружается заново при каждом вопросе.
-- Ответ по-прежнему показывается по мере поступления текста. Под окном вопроса появляется **Первый текст: … с от запуска подсказки**. Счётчик включает подготовку снимка, очередь отправки и ожидание текста от сервера; ожидание окончания речи до запуска подсказки в него не входит. Это не время полного ответа.
+1. Extract the distribution archive and open `app/CueGlass.exe`. If using source code, [build it first](#build-from-source).
+2. Open **Настройки** (Settings), enter your API key and optionally enable **Сохранить ключ в Windows** (Save key in Windows).
+3. Choose the microphone and playback device used by your call. A headset helps prevent duplicate audio.
+4. Choose a monitor, enable screen context if needed, and add meeting notes or source code.
+5. Click **Начать** (Start). Selected audio and screen context will be sent to OpenAI, using your API balance.
 
-При медленной речи с длинными паузами увеличь **Паузу после речи** до 900–1200 мс перед подключением: слишком короткая пауза может разделить один вопрос на несколько фрагментов. Уменьшение паузы не делает модель менее рассуждающей, но меняет границы речевых фрагментов. Гарантировать общую задержку в секундах без проверки твоего подключения нельзя.
+This version uses an API key; it has no ChatGPT sign-in button. It starts an independent model session without your ChatGPT/Codex chat history, memory, tools or project access.
 
-## Исправления кода и приложение с нуля
+## Controls
 
-Перед подключением включи **Код: развёрнутые ответы и исправления**. Режим увеличивает лимит ответа до 4096 токенов и добавляет инструкции для работы с исходниками, сохраняя ту же модель и глубину. Обычное правило коротких ответов 3–5 пунктов в этом режиме не применяется.
-
-Для правки существующего кода нажми **Добавить заметки или исходный код**, выбери файл, затем добавь текст ошибки и требуемое поведение. Поддерживаются текстовые исходники `.py`, `.js`, `.ts`, `.tsx`, `.cs`, `.go`, `.java`, `.sql` и другие; ограничение одного файла — 200 КБ. В контекст включаются имя файла и полный импортированный текст. Файл считывается один раз: после правок обнови контекст и начни новую сессию. Только снимок экрана не даёт модели кода за пределами видимой области.
-
-Для приложения с нуля опиши стек, входные данные, поведение и условия запуска. Проси минимальный рабочий вариант по файлам, затем отдельные доработки. Большие проекты выдаются частями; один ответ не вмещает произвольное приложение целиком.
-
-CueGlass предлагает текст кода и правок. Он **не редактирует проект, не применяет diff и не запускает тесты**. Скопировать ответ можно через контекстное меню карточки. Для полноценного цикла изменения файлов → сборка → проверка нужен редактор с агентом и доступом к папке проекта.
-
-## Управление
-
-| Действие | Клавиша / кнопка |
+| Action | Shortcut / control |
 | --- | --- |
-| Подсказка по текущему разговору и экрану | Ctrl+Shift+Space |
-| Остановить / возобновить передачу | Ctrl+Shift+P |
-| Скрыть / вернуть окно | Ctrl+Shift+H |
-| Задать текстовый вопрос | Ввести внизу и нажать Enter |
-| Скопировать ответ | Правая кнопка на карточке → Копировать ответ |
-| Полностью завершить соединение | Завершить или закрыть приложение |
+| Request a suggestion | `Ctrl+Shift+Space` |
+| Pause / resume transmission | `Ctrl+Shift+P` |
+| Hide / show the window | `Ctrl+Shift+H` |
+| Ask a text question | Type in the bottom input, then `Enter` |
+| Copy an answer | Right-click the answer card |
+| End the session | **Завершить** or close the app |
 
-Если горячая клавиша занята, приложение сообщает об этом; кнопки продолжают работать. Скрытие окна через Ctrl+Shift+H оставляет сессию активной. Пауза прекращает новую отправку звука и экрана, очищает локальные аудиобуферы и блокирует ожидающие отправки пакеты. Уже отправленные данные или пакет, который находился в отправке в момент нажатия, отозвать нельзя. Для освобождения устройств захвата нажми **Завершить**.
+Hiding the window leaves the session active. Pause blocks new audio and image transmissions; it cannot recall data already sent. End the session to release capture devices. Sessions stop after 55 minutes; restarting creates a new session. There is no automatic reconnection or conversation restore after a connection failure.
 
-Автоматические подсказки срабатывают после паузы в речи. Режим может реагировать и на обычные реплики: в длинном звонке можно отключить его перед подключением и вызывать подсказки горячей клавишей. Наушники помогают избежать дублирования звука через микрофон. Заметки, карточки и расшифровка предыдущей сессии не добавляются автоматически в новую сессию.
+## Audio, screen and code context
 
-## Исключение из демонстрации
+Audio from both sources is mixed into one channel, so speaker attribution is unreliable. Responses are text only. The model receives still screen images, not continuous video. Unchanged frames are reused; optional periodic updates run every 15 seconds.
 
-Включено по умолчанию. Приложение устанавливает `WDA_EXCLUDEFROMCAPTURE` и считывает флаг обратно. В версии 0.1.1 добавлен переключатель **Совместимость с Discord / захватом рабочего стола**, включённый по умолчанию: дополнительно применяется `WCA_EXCLUDED_FROM_DDA` и проверяется его значение. Зелёная строка означает, что **Windows подтвердила параметры**, а не что проведён тест в Discord или во всех программах записи. Приложение остаётся обычным видимым процессом Windows.
+The speech pause is adjustable from 450 to 1200 ms, with a 600 ms default. Screenshots are prepared during speech and answers stream as they arrive. These optimizations preserve the selected model and do not lower reasoning effort. End-to-end latency depends on your connection and the API.
 
-Версия 0.1.0 оставляла чёрный прямоугольник в демонстрации всего экрана Discord на этом компьютере. После перехода на 0.1.1 и перезапуска демонстрации пользователь подтвердил: **«Чёрный прямоугольник исчез»**. Эта проверка относится к текущей конфигурации Windows 10 сборки 19045 и Discord, а не ко всем версиям приложений захвата. На этой Windows также локально проверены установка, считывание, отключение и повторное включение дополнительного флага. Подтверждение пользователя записано отдельно в `verification/discord-user-check.json`.
+For code tasks, enable **Код: развёрнутые ответы и исправления** before connecting and import the relevant text files, up to 200 KB each. Code mode raises the answer budget from 1200 to 4096 tokens. Add the error, expected behavior and relevant context; for a new app, describe its stack and request files in stages.
 
-Для повторного теста закрой старое приложение, запусти EXE именно из этой папки (в заголовке есть 0.1.3), проверь включение двух переключателей в разделе **Окно** и полностью перезапусти демонстрацию в Discord. Проверяй изображение на стороне зрителя. Если чёрный блок остался, попробуй демонстрацию конкретного рабочего приложения вместо **Экран 1**. Discord использует несколько способов захвата; их текущий выбор можно посмотреть через Developer Mode → Voice/Video Connected → Debug → Screen Share, если эти элементы доступны в твоей версии. Не меняй настройки аппаратного ускорения наугад: сначала нужно установить фактический способ захвата.
+Imported files are read once. After editing them, refresh the context and start a new session. CueGlass suggests code as text; it does not edit your project, apply patches or run tests.
 
-Дополнительный API загружается динамически; при его недоступности основной флаг не снимается, приложение показывает предупреждение. Режим совместимости можно выключить отдельно. Флаги повторно применяются после показа окна, его активации и изменений композиции рабочего стола.
+## Screen-sharing behavior
 
-Проверка перед рабочим звонком: запусти нужный Zoom / Teams / Meet, подключись со второго устройства и посмотри именно получаемую демонстрацию. Проверь режим показа всего экрана и перенос окна между мониторами. Отдельно проверь всплывающие окна и меню: защита относится к основному окну CueGlass. Если окно видно, используй демонстрацию отдельного рабочего окна или другой монитор. Установка флага не обеспечивает универсальную невидимость для любых способов захвата.
+Capture exclusion is enabled by default using `WDA_EXCLUDEFROMCAPTURE`, with an optional `WCA_EXCLUDED_FROM_DDA` compatibility flag. The status line confirms Windows accepted these settings; it does not verify the viewer's stream.
 
-## Ключ, данные и расходы
+A user confirmed that the black rectangle disappeared in Discord with version 0.1.1 on Windows 10 build 19045. Version 0.1.3 passed a local GDI capture check with the new glass interface; this was not a new Discord test. Capture behavior depends on Windows and the sharing application's capture method. Check the viewer's actual feed before relying on it. CueGlass remains a normal Windows process.
 
-- Ключ передаётся напрямую в OpenAI в заголовке авторизации. У приложения нет собственного сервера, аналитики или телеметрии.
-- Если включено сохранение, ключ зашифрован Windows DPAPI для текущего пользователя в `%LOCALAPPDATA%\CueGlass\api-key.dpapi`. Удалить его можно кнопкой в настройках. Копирование этого файла на другой компьютер не переносит авторизацию.
-- Контекст и настройки сохраняются **обычным текстом** в `%LOCALAPPDATA%\CueGlass\settings.json`. Не добавляй туда секреты, которые не хочешь хранить на диске.
-- Аудиозаписи, снимки экрана и расшифровки приложение не сохраняет на диск. Пока идёт сессия, выбранные данные передаются в OpenAI и обрабатываются по условиям твоего API-аккаунта.
-- Счётчик токенов информационный: это сумма `usage.total_tokens` завершённых ответов, включая повторный контекст. Это не баланс и не точный расчёт цены. Проверь фактические расходы в OpenAI Usage. Аудио, изображения, ответы и транскрибация расходуют баланс.
-- Сессия завершается через 55 минут. При сетевой ошибке передача останавливается; автоматического переподключения с сохранением контекста пока нет.
+## Data and API costs
 
-Это отдельная сессия с моделью OpenAI. Она не получает автоматически историю текущего чата Codex, его память, инструменты или доступ к файлам.
+| Data | Handling |
+| --- | --- |
+| API key | Sent directly to OpenAI for authentication. Optional local storage uses Windows DPAPI for the current user. |
+| Settings and imported context | Stored as plain text in `%LOCALAPPDATA%\CueGlass\settings.json`. |
+| Audio, screenshots and transcripts | Not saved to disk by the app during normal use. Enabled inputs are transmitted to OpenAI during a session. |
+| Analytics | No application analytics, telemetry or intermediary server. |
 
-## Вход через ChatGPT
+The saved key is at `%LOCALAPPDATA%\CueGlass\api-key.dpapi` and can be removed in Settings. API charges and provider-side data handling follow your OpenAI account's terms. The token counter is informational; it is not a balance or a currency estimate.
 
-В этой версии реализовано **подключение по API-ключу**. Кнопки OAuth-входа нет. По проверенной документации Sign in with ChatGPT для локальных приложений поддерживает подходящие запросы Responses с текстом, изображениями и файлами; аудио и транскрибация по этому пути не поддерживаются. Поэтому такой вход сам по себе не заменит API-ключ для этого режима звонка. Позднее можно добавить отдельный Responses-режим с OAuth и самостоятельной транскрибацией.
+## Build from source
 
-## Что проверено
-
-Сборка Release без предупреждений; локальные синтетические проверки:
-
-- DPAPI: шифрование / расшифровка без сохранения настоящего ключа.
-- Стерео 48 кГц → моно PCM16 24 кГц на синтетическом сигнале.
-- Подключение к локальному имитатору Realtime, порядок аудио / текста / изображения / запроса ответа.
-- Сборка фрагментированного UTF-8 ответа, блокировка пакетов при паузе, закрытие соединения сервером.
-- Рендер WPF, установка и считывание основного флага исключения, включение / выключение дополнительного DDA-флага, корректное закрытие окна.
-- Отсутствие стандартной полосы заголовка, применение нативного стекла без AllowsTransparency / размытия текста, макеты настроек в обычном и компактном размерах.
-- Сохранение глубины рассуждений и лимита обычного ответа при настройке скорости, увеличенный лимит режима кода.
-- Повторное использование готового снимка, дедупликация одновременного захвата, обновление устаревшего кадра и очистка кэша при паузе.
-
-Отчёт находится в `verification/self-test.json`. Демо интерфейса в `verification/preview.png` использует вымышленные данные. Самопроверка не записывает микрофон и не обращается к OpenAI.
-
-**Подтверждено пользователем:** после обновления до 0.1.1 чёрный прямоугольник в демонстрации всего экрана Discord исчез. Автоматический `self-test` сам Discord не проверяет; его поле `discordCaptureVerified: false` относится только к охвату автоматических проверок.
-
-**Не проверено мной в этой сборке:** настоящий API-запрос с твоим ключом и захват твоей гарнитуры в реальном звонке. Совместимость с другими программами демонстрации требует отдельной проверки.
-
-Для повторной локальной проверки: `CueGlass.exe --self-test C:\путь\self-test.json`. Путь к отчёту лучше выбирать без пробелов; проверка также создаст рядом `preview.png`.
-
-## Исходники и сборка
-
-Исходники в `src/`, лицензия MIT. Для самостоятельной сборки нужен .NET 8 SDK. Команда из папки CueGlass:
+Install the **.NET 8 SDK** on Windows and run from the project root:
 
 ```powershell
-./build.ps1
+.\build.ps1
 ```
 
-Зависимости зафиксированы в `src/packages.lock.json`. Портативный EXE содержит .NET runtime и занимает примерно 69 МиБ. При первом запуске .NET извлекает необходимые нативные компоненты в стандартную временную папку `.net`; runtime не устанавливается в систему. Сборка не подписана сертификатом издателя.
+The script restores locked dependencies and publishes a self-contained, single-file `win-x64` build to `app/`. No separate runtime installation is needed to run that EXE. The current build is not publisher-signed.
 
-## Исследованные источники — 16 октября 2026
+| Path | Contents |
+| --- | --- |
+| `src/` | WPF UI, audio capture, Realtime client and local diagnostics |
+| `assets/` | README banner and GitHub social preview |
+| `verification/` | Diagnostic reports and demonstration screenshots |
+| `licenses/` | Third-party licenses and notices |
 
-- [ENIGMA AI](https://enigmai.ru/): ориентир по автоматическим ответам, контексту и скриншотам. Обещания скорости и универсальной невидимости не проверялись.
-- [Ghost by Renekin](https://renekin.com/): похожий сценарий плавающего помощника.
-- [OpenAI Realtime: conversation events](https://developers.openai.com/api/docs/guides/realtime-conversations): аудио, изображения и текстовые ответы.
-- [OpenAI Realtime: WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime): соединение с API.
-- [OpenAI: transcription](https://developers.openai.com/api/docs/guides/transcription): транскрибация в Realtime-сессии.
-- [OpenAI: VAD](https://developers.openai.com/api/docs/guides/realtime-vad): настройка длительности тишины перед определением конца речи.
-- [Sign in with ChatGPT: limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations): ограничения авторизации для аудио.
-- [Microsoft: SetWindowDisplayAffinity](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowdisplayaffinity): механизм исключения окна и его ограничения.
-- [Microsoft: WCA_EXCLUDED_FROM_DDA](https://learn.microsoft.com/en-us/windows/win32/dwm/windowcompositionattrib): дополнительное исключение из Desktop Duplication.
-- [Discord: способы захвата и диагностика](https://support.discord.com/hc/en-us/articles/9410427556375--Windows-Capturing-Application-Window-for-Screen-Share-and-Go-Live): несколько путей захвата, включая Windows Graphics Capture.
-- [Microsoft: WindowChrome](https://learn.microsoft.com/en-us/dotnet/api/system.windows.shell.windowchrome): собственная верхняя панель с сохранением поведения окна.
+## Verification
+
+Local synthetic checks cover DPAPI, audio conversion, WebSocket event ordering and UTF-8 streaming, pause behavior, screenshot caching, window lifecycle, glass rendering and capture flags. See the [self-test report](verification/self-test.json) and [visual check](verification/visual-check.json).
+
+These checks do not use a real OpenAI API key or record a live meeting. Live API latency and current Discord compatibility are not covered by them.
+
+## Design and license
+
+Native WPF visual patterns were informed by [Glass Card](https://21st.dev/@educalvolpz/components/glass-card), [Segmented Tabs](https://21st.dev/@micka_design/components/tabs-base) and the [Darkmatter theme](https://21st.dev/community/themes/darkmatter) on 21st.dev. React components are not bundled.
+
+The banner was generated with ImageGen; its [prompt](assets/preview-prompt.txt) is included. To set a repository social preview, upload [github-social-preview.jpg](assets/github-social-preview.jpg) under **Settings → Social preview → Edit**, as described in the [GitHub guide](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview). Adding a banner to the README does not set this repository setting automatically.
+
+[MIT license](LICENSE). Dependency notices are included in [licenses/](licenses/).

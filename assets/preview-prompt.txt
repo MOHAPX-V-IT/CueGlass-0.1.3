@@ -1,0 +1,16 @@
+Generation mode: built-in ImageGen (not CLI).
+Source PNG: 1774 x 887 pixels, opaque background.
+GitHub JPG: same composition and dimensions, optimized export for the upload size limit.
+
+Use case: ads-marketing
+Asset type: minimal GitHub repository social preview and README banner for the existing Windows app CueGlass.
+Primary request: Create a refined minimalist wide banner, exact canvas 1280 x 640 pixels, aspect ratio 2:1.
+Scene/backdrop: near-black navy (#101820), extremely subtle teal illumination, plenty of negative space.
+Subject: typographic wordmark CueGlass and one abstract translucent frosted-glass rounded rectangle with a thin mint outline and a simple open C-shaped arrow cue inside; the glass element is understated and small relative to the composition.
+Style/medium: precise contemporary software identity, flat editorial typography with a restrained glass material accent.
+Composition/framing: text block in the left half with generous margins, single glass cue in the right half. Balanced and quiet. Keep all essential content at least 80 pixels from edges.
+Color palette: dark navy, off-white text, soft mint (#A3F0DD).
+Text (verbatim): "CueGlass"
+Secondary text (verbatim): "AI meeting assistant for Windows"
+Typography: clean modern sans-serif, large legible title, modest subtitle, exact spelling and capitalization. Only these two text lines.
+Constraints: finished standalone banner, opaque background, crisp text, no screenshot or fake application interface, no decorative stars, no feature badges, no photographs, no extra text, no watermark, no third-party logos, no claims about invisibility or speed.

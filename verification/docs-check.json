@@ -1,0 +1,26 @@
+{
+  "readmes": [
+    "README.md",
+    "README.ru.md"
+  ],
+  "localLinksChecked": 20,
+  "localLinksValid": true,
+  "banner": {
+    "path": "assets/github-preview.png",
+    "size": [
+      1774,
+      887
+    ],
+    "bytes": 1389628
+  },
+  "socialPreview": {
+    "path": "assets/github-social-preview.jpg",
+    "size": [
+      1774,
+      887
+    ],
+    "bytes": 176242,
+    "underOneMB": true
+  },
+  "applicationSha256Unchanged": true
+}
